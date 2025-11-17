@@ -5,11 +5,17 @@ A lightweight Chrome extension that allows you to block any unwanted element on 
 ## Features
 
 ✨ **Click to Block** - Simply select any element and block it instantly
+
 🎯 **Visual Highlighting** - See exactly what you're about to block with red outline highlighting
-💾 **Persistent Blocking** - Your blocked elements stay blocked across page reloads
+
+💾 **Persistent Blocking** - Your blocked elements stay blocked across page reloads.
+
 🗂️ **Manage All Blocks** - View and manage all blocked elements across different websites
+
 🗑️ **Easy Unblocking** - Remove individual blocks or clear entire sites with one click
+
 🌐 **Works Everywhere** - Blocks elements on any website you visit
+
 🔒 **100% Private** - All data stored locally on your device, nothing is sent to servers
 
 ## How to Use
