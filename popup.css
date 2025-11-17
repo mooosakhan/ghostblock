@@ -1,0 +1,181 @@
+:root{
+  --bg: #ffffff;
+  --muted: #6b7280;
+  --card-shadow: 0 10px 30px rgba(16,24,40,0.08);
+  --accent: #f3f4f5; /* blue */
+  --accent-pressed: #cfcfd0;
+  --success: #4ca06b;
+  --outline: #7c7c7c;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  /* width: 320px; popup width */
+  background: var(--bg);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color: #111827;
+  border-radius: 12px;
+}
+
+.card{
+  background: var(--bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  border: 1px solid rgba(15,23,42,0.04);
+}
+
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--outline);
+}
+
+.title{
+  font-size:18px;
+  margin:0;
+  font-weight:600;
+  color:#0f172a;
+}
+
+.more-btn{
+  background:transparent;
+  border:none;
+  padding:6px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.more-btn:hover{ background: rgba(15,23,42,0.03); }
+
+.card-body{
+  padding: 14px 16px 18px 16px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.label{
+  font-size:16px;
+  font-weight:600;
+  color:#0f172a;
+}
+
+/* Toggle switch */
+.toggle-wrap{
+  display:inline-flex;
+  align-items:center;
+}
+
+.toggle-checkbox{
+  position:absolute;
+  left:-9999px;
+  opacity:0;
+}
+
+.toggle{
+  width:44px;
+  height:25px;
+  background: #eaebec;
+  border-radius:999px;
+  display:inline-block;
+  position:relative;
+  transition: background .18s ease;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.03);
+  cursor:pointer;
+}
+
+.toggle::after{
+  content:"";
+  width:22px;
+  height:22px;
+  background:white;
+  border-radius:50%;
+  position:absolute;
+  top:1.5px;
+  left:4px;
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .12s;
+  box-shadow: 0 4px 10px rgba(159, 160, 161, 0.12);
+}
+
+/* checked state */
+.toggle-checkbox:checked + .toggle{
+  background: black;
+}
+
+.toggle-checkbox:checked + .toggle::after{
+  transform: translateX(16px);
+  background: white;
+
+}
+
+/* Buttons */
+.actions{
+  display:flex;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.btn{
+  flex:1;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition: all .14s ease;
+  border:1px solid transparent;
+}
+
+.btn-outline{
+  background:#ffffff;
+  color:#0f172a;
+  border:1px solid var(--outline);
+}
+
+.btn-outline:hover{
+  background:#fafafa;
+  transform: translateY(-1px);
+}
+
+.btn-neutral{
+  background: var(--accent);
+  color:black;
+  border-color:var(--accent);
+  border:1px solid var(--outline);
+
+}
+
+.btn-neutral:hover{
+  background: var(--accent-pressed);
+  transform: translateY(-1px);
+}
+
+/* Divider + privacy */
+.divider{
+  height:1px;
+  background:var(--outline);
+  margin:8px 0 12px 0;
+  border-radius:2px;
+}
+
+.privacy{
+  margin:0;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+/* Small screens adjustment (if extension popup narrower) */
+@media (max-width:300px){
+  html,body{ width: 280px; }
+}

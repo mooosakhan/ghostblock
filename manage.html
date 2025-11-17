@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Blocked Elements</title>
+
+  <style>
+    /* =============== GLOBAL =============== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f5f7;
+      color: #212529;
+      padding: 40px 20px;
+      transition: background .25s, color .25s;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #6c757d;
+      margin-bottom: 30px;
+    }
+
+    /* =============== EMPTY STATE =============== */
+    .empty-state {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: background .25s;
+    }
+
+    .empty-state h2 {
+      font-size: 21px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      color: #868e96;
+    }
+
+    /* =============== SITE CARD =============== */
+    .site-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: background .25s, border-color .25s;
+    }
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .site-name {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .site-count {
+      background: #e9ecef;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #495057;
+      transition: background .25s, color .25s;
+    }
+
+    /* =============== ELEMENT ITEM =============== */
+    .elements-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .element-item {
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background .2s;
+    }
+
+    .element-item:hover {
+      background: #eceff1;
+    }
+
+    .element-selector {
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: #444;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =============== BUTTONS =============== */
+    .unblock-btn {
+      background: #51cf66;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .unblock-btn:hover {
+      background: #40c057;
+    }
+
+    .clear-site-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .clear-site-btn:hover {
+      background: #ff5252;
+    }
+
+    .clear-all-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background .2s;
+    }
+
+    .clear-all-btn:hover {
+      background: #ff5252;
+    }
+
+    /* ============================================================
+       DARK MODE STYLING — AUTOMATIC WITH prefers-color-scheme
+       ============================================================ */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #121212;
+        color: #f1f3f5;
+      }
+
+      .subtitle {
+        color: #adb5bd;
+      }
+
+      .empty-state {
+        background: #1e1e1e;
+        box-shadow: none;
+      }
+
+      .empty-state p {
+        color: #999;
+      }
+
+      .site-card {
+        background: #1b1b1b;
+        box-shadow: none;
+      }
+
+      .element-item {
+        background: #272727;
+      }
+
+      .element-item:hover {
+        background: #2f2f2f;
+      }
+
+      .element-selector {
+        color: #ccc;
+      }
+
+      .site-count {
+        background: #343a40;
+        color: #dee2e6;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Blocked Elements</h1>
+    <p class="subtitle">Manage all elements you've blocked across different websites</p>
+
+    <div id="content"></div>
+  </div>
+
+  <script src="manage.js"></script>
+</body>
+</html>

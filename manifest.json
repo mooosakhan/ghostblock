@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Element Blocker",
+  "version": "1.0",
+  "description": "Click to hide or remove unwanted elements on any webpage. No data is collected.",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "*://*/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Element Blocker</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="card">
+    <header class="card-header">
+      <h1 class="title">Element Blocker</h1>
+      <button class="more-btn" title="More">
+        <!-- vertical ellipsis -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <circle cx="12" cy="5" r="1.5" fill="#6b7280"></circle>
+          <circle cx="12" cy="12" r="1.5" fill="#6b7280"></circle>
+          <circle cx="12" cy="19" r="1.5" fill="#6b7280"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <div class="card-body">
+      <div class="row">
+        <label class="label">Start Blocking</label>
+        <div class="toggle-wrap">
+          <input id="blockToggle" class="toggle-checkbox" type="checkbox" />
+          <label for="blockToggle" class="toggle"></label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="clearBtn" class="btn btn-outline">Clear Blocks</button>
+        <button id="manageBtn" class="btn btn-neutral">Manage</button>
+      </div>
+
+      <div class="divider" aria-hidden></div>
+
+      <p class="privacy">Your privacy is our priority. All blocked elements are stored locally.</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
