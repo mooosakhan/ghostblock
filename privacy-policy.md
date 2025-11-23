@@ -1,14 +1,14 @@
-# Privacy Policy for Element Blocker
+# Privacy Policy for GhostBlock
 
 **Last Updated:** November 17, 2025
 
 ## Our Privacy Commitment
 
-Element Blocker is designed with privacy as the top priority. We believe you should have complete control over your data and browsing experience without any surveillance or tracking.
+GhostBlock is designed with privacy as the top priority. We believe you should have complete control over your data and browsing experience without any surveillance or tracking.
 
 ## Data Collection
 
-**We do NOT collect any personal data.** Element Blocker:
+**We do NOT collect any personal data.** GhostBlock:
 - Does not collect information about you
 - Does not track your browsing habits
 - Does not analyze which websites you visit
@@ -25,13 +25,13 @@ The only data Element Blocker stores is:
 ## Storage Details
 
 - **Location**: Chrome's `chrome.storage.local` API (encrypted on your device)
-- **Accessibility**: Only Element Blocker can access this data
+- **Accessibility**: Only GhostBlock can access this data
 - **Deletion**: All data is permanently deleted if you uninstall the extension
 - **Backup**: Your data is NOT synced to Google's servers or any cloud service
 
 ## No Network Requests
 
-Element Blocker does NOT:
+GhostBlock does NOT:
 - Send any data to external servers
 - Make any network requests (except to load the website's content you visit)
 - Communicate with any third-party services
@@ -53,7 +53,7 @@ The only data we store locally is used for:
 
 ## Third-Party Services
 
-Element Blocker does NOT use:
+GhostBlock does NOT use:
 - Google Analytics
 - Mixpanel or similar analytics
 - Advertising networks
@@ -110,7 +110,7 @@ These are necessary for the extension's core functionality and do NOT enable dat
 
 ## Compliance
 
-Element Blocker complies with:
+GhostBlock complies with:
 - Chrome Web Store privacy requirements
 - GDPR principles (though no personal data is collected)
 - CCPA standards (though no personal data is collected)
@@ -124,11 +124,11 @@ This extension is built with:
 - Transparent permissions
 - Clear privacy practices
 
-We believe privacy is a fundamental right and have designed Element Blocker accordingly.
+We believe privacy is a fundamental right and have designed GhostBlock accordingly.
 
 ---
 
-**In Summary**: Element Blocker stores only your block choices locally on your device, shares nothing with anyone, and collects no data about you. Your privacy is guaranteed. for Element Blocker
+**In Summary**: GhostBlock stores only your block choices locally on your device, shares nothing with anyone, and collects no data about you. Your privacy is guaranteed. for Element Blocker
 Last updated: 11/17/2025
 
 Element Blocker does not collect, store, transmit, or share any personal data...

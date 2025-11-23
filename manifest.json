@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Element Blocker",
+  "name": "GhostBlock",
   "version": "1.0",
   "description": "Click to hide or remove unwanted elements on any webpage. No data is collected.",
   
@@ -15,7 +15,13 @@
   ],
 
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": "assets/favicon.png"
+  },
+  "icons": {
+    "16": "assets/favicon.png",
+    "48": "assets/favicon.png",
+    "128": "assets/logo.png"
   },
 
   "content_scripts": [

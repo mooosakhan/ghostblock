@@ -1,4 +1,4 @@
-# Element Blocker
+# GhostBlock
 
 A lightweight Chrome extension that allows you to block any unwanted element on any webpage with just one click.
 
