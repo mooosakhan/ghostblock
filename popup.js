@@ -68,6 +68,35 @@ function initializeApp() {
   applyCurrentQuickOptions();
 }
 
+// Clear quick options for the current tab
+function clearQuickOptionsForCurrentTab() {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]) {
+      const url = new URL(tabs[0].url);
+      const hostname = url.hostname;
+      
+      // Only clear YouTube quick options for now
+      if (hostname.includes('youtube.com')) {
+        chrome.storage.local.set({ quickBlockOptions: {} }, () => {
+          // Reset all option checkboxes in the UI
+          const optionIds = [
+            'hideNotificationBell', 'hideFeed', 'disableAutoplay', 'hideShorts',
+            'hideSubBar', 'hideNonLists', 'hideRelated', 'hideSidebar',
+            'hideLiveChat', 'hidePlaylist', 'hideMerch', 'hideComments', 'disablePlaylists'
+          ];
+          
+          optionIds.forEach(id => {
+            const checkbox = qs(id);
+            if (checkbox) {
+              checkbox.checked = false;
+            }
+          });
+        });
+      }
+    }
+  });
+}
+
 // Apply currently saved quick options to the active tab
 function applyCurrentQuickOptions() {
   chrome.storage.local.get(['quickBlockOptions'], (result) => {
@@ -161,12 +190,16 @@ function setupEventListeners() {
   // --- Clear blocks button ---
   qs("clearBtn").addEventListener("click", () => {
     // Add confirmation for destructive action
-    if (confirm('Clear all blocked elements on this site?')) {
+    if (confirm('Clear all blocked elements and quick options on this site?\n\nThis will show all hidden elements immediately.')) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]) {
-          chrome.tabs.sendMessage(tabs[0].id, { action: "clearBlocks" }, () => {});
+          // Send clear action to content script
+          chrome.tabs.sendMessage(tabs[0].id, { action: "clearAllSiteData" }, () => {});
         }
       });
+
+      // Also clear quick options from storage for this action
+      clearQuickOptionsForCurrentTab();
 
       isBlocking = false;
       updateToggle();

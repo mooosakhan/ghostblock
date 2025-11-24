@@ -248,15 +248,107 @@ function clearAllBlocks() {
     });
   });
 
-  // remove classes from DOM
+  // More thorough DOM cleanup - remove classes and all related styles
   document.querySelectorAll(`.${HIDE_CLASS}`).forEach(el => {
     el.classList.remove(HIDE_CLASS);
+    // Remove all possible hiding styles
     el.style.removeProperty('display');
     el.style.removeProperty('visibility');
     el.style.removeProperty('opacity');
+    el.style.removeProperty('height');
+    el.style.removeProperty('width');
+    el.style.removeProperty('margin');
+    el.style.removeProperty('padding');
+    
+    // Force show by setting display if it was none
+    if (window.getComputedStyle(el).display === 'none') {
+      el.style.setProperty('display', 'block', 'important');
+      // Remove after a brief moment to let browser recalculate
+      setTimeout(() => {
+        el.style.removeProperty('display');
+      }, 100);
+    }
   });
 
+  // Also clear any elements that might have been hidden by quick options
+  // but don't have the hide class (in case of inconsistent state)
+  if (hostname.includes('youtube.com')) {
+    clearYouTubeQuickOptionsFromDOM();
+  }
+
   removeHighlight();
+}
+
+// --- Clear YouTube quick options from DOM ---
+function clearYouTubeQuickOptionsFromDOM() {
+  // Get all possible selectors from youtubeSelectors and fallbackSelectors
+  const allSelectors = [...Object.values(youtubeSelectors), ...Object.values(fallbackSelectors)];
+  
+  allSelectors.forEach(selector => {
+    if (!selector) return;
+    try {
+      // Handle comma-separated selectors
+      const individualSelectors = selector.split(',').map(s => s.trim());
+      
+      individualSelectors.forEach(sel => {
+        try {
+          const elements = document.querySelectorAll(sel);
+          elements.forEach(el => {
+            // Remove our hide class
+            el.classList.remove(HIDE_CLASS);
+            
+            // Remove all display-related properties
+            el.style.removeProperty('display');
+            el.style.removeProperty('visibility');
+            el.style.removeProperty('opacity');
+            el.style.removeProperty('height');
+            el.style.removeProperty('width');
+            
+            // Force visibility by overriding with important
+            el.style.setProperty('display', '', 'important');
+            el.style.setProperty('visibility', 'visible', 'important');
+            el.style.setProperty('opacity', '1', 'important');
+            
+            // Clean up after a moment to let natural styles take over
+            setTimeout(() => {
+              el.style.removeProperty('display');
+              el.style.removeProperty('visibility'); 
+              el.style.removeProperty('opacity');
+            }, 200);
+          });
+        } catch (e) {
+          // Ignore invalid individual selectors
+        }
+      });
+    } catch (e) {
+      // Ignore invalid selectors
+    }
+  });
+  
+  // Also clear any remaining hidden elements globally
+  document.querySelectorAll('[style*="display: none"], [style*="visibility: hidden"]').forEach(el => {
+    if (el.style.display === 'none' && el.classList.contains(HIDE_CLASS)) {
+      el.style.removeProperty('display');
+      el.classList.remove(HIDE_CLASS);
+    }
+  });
+}
+
+// --- Clear quick options from storage and DOM ---
+function clearAllQuickOptionsFromStorage() {
+  if (hostname.includes('youtube.com')) {
+    // Clear from DOM first
+    clearYouTubeQuickOptionsFromDOM();
+    
+    // Clear from storage
+    try {
+      chrome.storage.local.set({ quickBlockOptions: {} }, () => {
+        console.log('Quick options cleared from storage');
+      });
+    } catch (e) {
+      console.warn('Failed to clear quick options from storage:', e);
+    }
+  }
 }
 
 // --- Apply a selector to all matching elements (and optionally save it) ---
@@ -356,6 +448,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   else if (request.action === 'clearBlocks') {
     clearAllBlocks();
+    isBlocking = false;
+    removeHighlight();
+    sendResponse({ success: true });
+  }
+  else if (request.action === 'clearAllSiteData') {
+    // Clear both blocked elements and quick options
+    clearAllBlocks();
+    clearAllQuickOptionsFromStorage();
     isBlocking = false;
     removeHighlight();
     sendResponse({ success: true });
