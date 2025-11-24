@@ -15,14 +15,9 @@
   ],
 
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": "assets/favicon.png"
+    "default_popup": "popup.html"
   },
-  "icons": {
-    "16": "assets/favicon.png",
-    "48": "assets/favicon.png",
-    "128": "assets/logo.png"
-  },
+
 
   "content_scripts": [
     {

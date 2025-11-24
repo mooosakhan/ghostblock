@@ -175,6 +175,59 @@ html,body{
   line-height:1.35;
 }
 
+/* Options Panel */
+.options-panel {
+  padding: 16px 0;
+}
+
+.options-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.option-item input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.option-item:hover {
+  color: #111827;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent-pressed);
+  border-color: var(--accent-pressed);
+}
+
 /* Small screens adjustment (if extension popup narrower) */
 @media (max-width:300px){
   html,body{ width: 280px; }

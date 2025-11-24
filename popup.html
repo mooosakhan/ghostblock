@@ -31,8 +31,83 @@
       </div>
 
       <div class="actions">
-        <button id="clearBtn" class="btn btn-outline">Clear Blocks</button>
+        <button id="clearBtn" class="btn btn-outline">Clear This Site</button>
         <button id="manageBtn" class="btn btn-neutral">Manage</button>
+        <button id="optionsBtn" class="btn btn-neutral">Options</button>
+      </div>
+
+      <div id="optionsPanel" class="options-panel" style="display: none;">
+        <div class="divider" aria-hidden></div>
+        <h3 class="options-title">Quick Block Options</h3>
+        
+        <div class="options-grid">
+          <label class="option-item">
+            <input type="checkbox" id="hideNotificationBell" />
+            <span>Hide Notification Bell</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideFeed" />
+            <span>Hide Feed</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="disableAutoplay" />
+            <span>Disable Autoplay</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideShorts" />
+            <span>Hide Shorts Tab</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideSubBar" />
+            <span>Hide Subscriptions Tab</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideNonLists" />
+            <span>Show Only Library/Lists</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideRelated" />
+            <span>Hide Related Videos</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideSidebar" />
+            <span>Hide Sidebar Related</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideLiveChat" />
+            <span>Hide Live Chat</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hidePlaylist" />
+            <span>Hide Sidebar Playlists</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideMerch" />
+            <span>Hide Merch</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="hideComments" />
+            <span>Hide Comments</span>
+          </label>
+          
+          <label class="option-item">
+            <input type="checkbox" id="disablePlaylists" />
+            <span>Disable Playlists</span>
+          </label>
+        </div>
+        
+        <button id="saveOptionsBtn" class="btn btn-primary">Save Options</button>
       </div>
 
       <div class="divider" aria-hidden></div>
