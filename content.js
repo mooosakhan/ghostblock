@@ -1,4 +1,4 @@
-// content.js - Improved & corrected version
+// content.js - Optimized for fast loading and clean UI
 // Unified class names:
 //  - element-blocker-hidden  -> applied to hidden elements (and sets display: none !important)
 //  - element-blocker-highlight -> temporary highlight during blocking mode
@@ -11,15 +11,47 @@ const HIGHLIGHT_CLASS = 'element-blocker-highlight';
 const STORAGE_KEY = 'blockedElements';
 const hostname = window.location.hostname;
 
-// --- Inject CSS to ensure hidden elements are actually hidden and highlight visible ---
-(function injectStyles() {
+// --- Immediate style injection and selector application to prevent delay ---
+(function immediateInit() {
+  // Inject critical CSS immediately
   const css = `
     .${HIDE_CLASS} { display: none !important; visibility: hidden !important; opacity: 0 !important; }
-    .${HIGHLIGHT_CLASS} { outline: 3px solid rgba(255,0,0,0.85); background: rgba(255,0,0,0.03); cursor: crosshair; }
+    .${HIGHLIGHT_CLASS} { outline: 2px solid #6b7280 !important; background: rgba(107, 114, 128, 0.05) !important; cursor: crosshair !important; }
   `;
   const style = document.createElement('style');
   style.textContent = css;
-  document.documentElement.appendChild(style);
+  (document.head || document.documentElement).appendChild(style);
+
+  // Try to load and apply blocked selectors AND quick options immediately from storage
+  try {
+    chrome.storage.local.get([STORAGE_KEY, 'quickBlockOptions'], (result) => {
+      if (chrome.runtime.lastError) return;
+      
+      const stored = result[STORAGE_KEY] || {};
+      const hostSelectors = stored[hostname] || [];
+      const quickOptions = result.quickBlockOptions || {};
+      
+      // Apply blocked selectors immediately
+      if (hostSelectors.length > 0) {
+        hostSelectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => el.classList.add(HIDE_CLASS));
+          } catch (e) {
+            // Ignore selector errors
+          }
+        });
+        blockedSelectors = [...hostSelectors];
+      }
+      
+      // Apply quick options immediately (for YouTube)
+      if (hostname.includes('youtube.com') && Object.keys(quickOptions).length > 0) {
+        applyQuickOptionsImmediately(quickOptions);
+      }
+    });
+  } catch (e) {
+    // Storage might not be ready yet, will retry in main init
+  }
 })();
 
 // --- Utility: safe CSS escape ---
@@ -144,14 +176,47 @@ function setStoredBlocked(obj, callback) {
   });
 }
 
-// --- Load selectors for this hostname (once on script load) ---
+// --- Load selectors AND quick options for this hostname (once on script load) ---
 function loadBlockedSelectorsFromStorage() {
+  // Skip if already loaded in immediate init
+  if (blockedSelectors.length > 0) {
+    reapplyAllBlockedSelectors();
+    // Still need to load and apply quick options if not done already
+    loadAndApplyQuickOptions();
+    return;
+  }
+  
   getStoredBlocked((stored) => {
     const all = stored || {};
-    blockedSelectors = Array.isArray(all[hostname]) ? all[hostname].slice() : [];
-    // apply them immediately
-    reapplyAllBlockedSelectors();
+    const hostSelectors = Array.isArray(all[hostname]) ? all[hostname].slice() : [];
+    
+    // Only update if we don't have selectors already
+    if (blockedSelectors.length === 0 && hostSelectors.length > 0) {
+      blockedSelectors = hostSelectors;
+      reapplyAllBlockedSelectors();
+    }
+    
+    // Always try to load and apply quick options
+    loadAndApplyQuickOptions();
   });
+}
+
+// --- Load and apply quick options from storage ---
+function loadAndApplyQuickOptions() {
+  if (!hostname.includes('youtube.com')) return;
+  
+  try {
+    chrome.storage.local.get(['quickBlockOptions'], (result) => {
+      if (chrome.runtime.lastError) return;
+      
+      const quickOptions = result.quickBlockOptions || {};
+      if (Object.keys(quickOptions).length > 0) {
+        applyQuickOptionsImmediately(quickOptions);
+      }
+    });
+  } catch (e) {
+    console.warn('Failed to load quick options:', e);
+  }
 }
 
 // --- Save a selector for this host (avoid duplicates) ---
@@ -311,25 +376,78 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // --- Quick option handling (YouTube-specific helpers included) ---
 const youtubeSelectors = {
-  hideNotificationBell: 'ytd-notification-topbar-button-renderer, #notification-icon, button#notifications-button',
-  hideFeed: 'ytd-rich-grid-renderer, #contents, #primary #contents, ytd-browse[page-subtype="home"] #contents',
-  disableAutoplay: '.ytp-autonav-toggle-button, .ytp-autonav-toggle',
-  hideShorts: 'a[href*="/shorts"], ytd-rich-shelf-renderer[href*="/shorts"], tp-yt-paper-tab a[href*="/shorts"]',
-  hideSubBar: '[href*="/feed/subscriptions"], a[href*="/feed/subscriptions"]',
-  hideComments: 'ytd-comments#comments, #comments, ytd-comments',
-  hideSidebar: '#secondary, ytd-watch-next-secondary-results-renderer, .secondary',
-  // add more as needed
+  hideNotificationBell: 'ytd-notification-topbar-button-renderer, #notification-icon, button[aria-label*="Notification"], .yt-spec-button-shape-next[aria-label*="notification"]',
+  hideFeed: 'ytd-rich-grid-renderer, #contents.ytd-rich-grid-renderer, ytd-browse[page-subtype="home"] #contents, [page-subtype="home"] #contents',
+  disableAutoplay: '.ytp-autonav-toggle-button, .ytp-autonav-toggle, button[aria-label*="Autoplay"]',
+  hideShorts: 'a[href*="/shorts"], ytd-rich-shelf-renderer[is-shorts], tp-yt-paper-tab[aria-label*="Shorts"], ytd-guide-entry-renderer a[href*="/shorts"]',
+  hideSubBar: 'ytd-guide-entry-renderer a[href*="/subscriptions"], tp-yt-paper-tab[aria-label*="Subscriptions"], a[href="/feed/subscriptions"]',
+  hideNonLists: 'ytd-guide-section-renderer:not(:has(a[href*="/playlist"])), ytd-guide-entry-renderer:not(:has(a[href*="/playlist"]))',
+  hideRelated: 'ytd-compact-video-renderer, ytd-video-secondary-info-renderer #related',
+  hideSidebar: '#secondary, ytd-watch-next-secondary-results-renderer, #secondary-inner',
+  hideLiveChat: 'ytd-live-chat-frame, #chatframe, ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-live-chat"]',
+  hidePlaylist: 'ytd-playlist-panel-renderer, .ytd-playlist-panel-renderer',
+  hideMerch: 'ytd-merch-shelf-renderer, ytd-product-details-renderer, [class*="merch"]',
+  hideComments: 'ytd-comments#comments, #comments.ytd-watch-flexy, ytd-comment-thread-renderer',
+  disablePlaylists: 'ytd-playlist-video-renderer .ytd-playlist-video-renderer, a[href*="&list="]'
 };
 
 // fallback simpler selectors per optionId (used only if primary fails)
 const fallbackSelectors = {
-  hideNotificationBell: '[id*="notification"], [class*="notification"]',
-  hideFeed: '[id*="contents"], [class*="feed"]',
-  hideShorts: '[href*="shorts"], [title*="Shorts"]',
-  hideSubBar: '[href*="subscription"], [title*="Subscription"]',
+  hideNotificationBell: '[aria-label*="notification" i], [title*="notification" i], button[class*="notification"]',
+  hideFeed: '[id*="contents"], [class*="feed"], [class*="grid"]',
+  disableAutoplay: '[aria-label*="autoplay" i], button[class*="autoplay"]',
+  hideShorts: '[href*="shorts"], [title*="Shorts" i], [aria-label*="shorts" i]',
+  hideSubBar: '[href*="subscription"], [title*="Subscription" i], [aria-label*="subscription" i]',
+  hideNonLists: '[class*="guide"]:not([href*="playlist"])',
+  hideRelated: '[class*="compact-video"], [class*="related"]',
+  hideSidebar: '[id*="secondary"], [class*="secondary"], [class*="sidebar"]',
+  hideLiveChat: '[id*="chat"], [class*="chat"]',
+  hidePlaylist: '[class*="playlist-panel"], [class*="playlist"]',
+  hideMerch: '[class*="merch"], [class*="product"]',
   hideComments: '[id*="comment"], [class*="comment"]',
-  hideSidebar: '[id*="secondary"], [class*="secondary"]'
+  disablePlaylists: '[class*="playlist-video"], [href*="&list="]'
 };
+
+// --- Apply quick options immediately during page load (optimized for speed) ---
+function applyQuickOptionsImmediately(options) {
+  if (!hostname.includes('youtube.com') || !options) return;
+  
+  // Apply each enabled option immediately
+  Object.keys(options).forEach(optionId => {
+    if (!options[optionId]) return;
+    
+    const primary = youtubeSelectors[optionId];
+    if (primary) {
+      try {
+        const elements = document.querySelectorAll(primary);
+        elements.forEach(el => {
+          if (!el.classList.contains(HIDE_CLASS)) {
+            el.classList.add(HIDE_CLASS);
+            el.style.setProperty('display', 'none', 'important');
+          }
+        });
+        
+        // Don't save selector here as it might create duplicates
+      } catch (e) {
+        // Try fallback if primary fails
+        const fallback = fallbackSelectors[optionId];
+        if (fallback) {
+          try {
+            const fallbackElements = document.querySelectorAll(fallback);
+            fallbackElements.forEach(el => {
+              if (!el.classList.contains(HIDE_CLASS)) {
+                el.classList.add(HIDE_CLASS);
+                el.style.setProperty('display', 'none', 'important');
+              }
+            });
+          } catch (fe) {
+            console.warn('Quick option failed:', optionId, fe);
+          }
+        }
+      }
+    }
+  });
+}
 
 function applyQuickOptions(options) {
   if (!hostname.includes('youtube.com')) {
@@ -484,8 +602,53 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// --- Init load ---
-loadBlockedSelectorsFromStorage();
+// --- Optimized init load ---
+// Use different strategies based on document state
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    loadBlockedSelectorsFromStorage();
+  });
+} else {
+  // DOM is already ready
+  loadBlockedSelectorsFromStorage();
+}
+
+// Also reapply on page changes (for SPAs)
+let lastURL = location.href;
+new MutationObserver(() => {
+  const url = location.href;
+  if (url !== lastURL) {
+    lastURL = url;
+    // Small delay to let new content load
+    setTimeout(() => {
+      if (blockedSelectors.length > 0) {
+        reapplyAllBlockedSelectors();
+      }
+      // Also reapply quick options for YouTube SPA navigation
+      if (hostname.includes('youtube.com')) {
+        loadAndApplyQuickOptions();
+      }
+    }, 100);
+  }
+}).observe(document, { subtree: true, childList: true });
+
+// Also watch for dynamic content changes and reapply quick options
+if (hostname.includes('youtube.com')) {
+  const quickOptionsObserver = new MutationObserver(() => {
+    // Throttled reapplication for performance
+    if (quickOptionsObserver.timeout) return;
+    quickOptionsObserver.timeout = setTimeout(() => {
+      loadAndApplyQuickOptions();
+      delete quickOptionsObserver.timeout;
+    }, 500);
+  });
+  
+  // Observe document changes to catch dynamically loaded YouTube content
+  quickOptionsObserver.observe(document, { 
+    childList: true, 
+    subtree: true 
+  });
+}
 
 // -- Optional: expose small debug for console usage --
 window.__elementBlocker = {

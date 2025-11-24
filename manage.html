@@ -1,11 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GhostBlock - Manage Blocks</title>
   <link rel="icon" type="image/png" href="assets/favicon.png" />
 
   <style>
+    /* =============== THEME VARIABLES =============== */
+    :root {
+      /* Light Theme */
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --border-medium: #cbd5e1;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      
+      --primary: #374151;
+      --primary-hover: #1f2937;
+      --primary-light: #f3f4f6;
+      --success: #6b7280;
+      --danger: #6b7280;
+      --warning: #9ca3af;
+      
+      --page-bg: #f8fafc;
+      --card-bg: var(--bg);
+      --hover-bg: #f1f5f9;
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-light: #334155;
+      --border-medium: #475569;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+      
+      --page-bg: #020617;
+      --card-bg: var(--bg);
+      --hover-bg: #1e293b;
+    }
+
     /* =============== GLOBAL =============== */
     * {
       margin: 0;
@@ -14,217 +61,337 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f4f5f7;
-      color: #212529;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, "Inter", sans-serif;
+      background: var(--page-bg);
+      color: var(--text-primary);
       padding: 40px 20px;
-      transition: background .25s, color .25s;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
-    h1 {
+    /* =============== HEADER =============== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding: 32px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      font-size: 36px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .header-text h1 {
       font-size: 32px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
     }
 
     .subtitle {
       font-size: 16px;
-      color: #6c757d;
-      margin-bottom: 30px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .theme-toggle {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-medium);
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-toggle:hover {
+      background: var(--hover-bg);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     /* =============== EMPTY STATE =============== */
     .empty-state {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 60px 40px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 80px 40px;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      transition: background .25s;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+      opacity: 0.7;
     }
 
     .empty-state h2 {
-      font-size: 21px;
-      margin-bottom: 10px;
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      font-weight: 600;
     }
 
     .empty-state p {
-      color: #868e96;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.5;
     }
 
     /* =============== SITE CARD =============== */
     .site-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      transition: background .25s, border-color .25s;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .site-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg), 0 0 0 1px var(--primary-light);
+    }
+
+    .site-card:hover::before {
+      left: 100%;
     }
 
     .site-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .site-name {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 20px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      color: var(--text-primary);
+      letter-spacing: -0.025em;
+    }
+
+    .site-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: white;
+      font-weight: 600;
     }
 
     .site-count {
-      background: #e9ecef;
-      padding: 4px 12px;
-      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 20px;
       font-size: 13px;
-      font-weight: 500;
-      color: #495057;
-      transition: background .25s, color .25s;
+      font-weight: 600;
+      border: 1px solid var(--primary);
+    }
+
+    .site-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
     /* =============== ELEMENT ITEM =============== */
     .elements-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
     }
 
     .element-item {
-      padding: 12px 16px;
-      background: #f8f9fa;
-      border-radius: 8px;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background .2s;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border-light);
     }
 
     .element-item:hover {
-      background: #eceff1;
+      background: var(--hover-bg);
+      transform: translateX(4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .element-info {
+      flex: 1;
+      margin-right: 16px;
     }
 
     .element-selector {
-      font-family: "Courier New", monospace;
+      font-family: "SF Mono", "Monaco", "Consolas", monospace;
       font-size: 13px;
-      color: #444;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    .element-description {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
     }
 
     /* =============== BUTTONS =============== */
-    .unblock-btn {
-      background: #51cf66;
-      color: white;
+    .btn {
       border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      transition: background .2s;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .unblock-btn {
+      background: var(--success);
+      color: white;
+      padding: 8px 16px;
     }
 
     .unblock-btn:hover {
-      background: #40c057;
+      background: var(--success);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
 
     .clear-site-btn {
-      background: #ff6b6b;
+      background: var(--danger);
       color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background .2s;
+      padding: 6px 12px;
     }
 
     .clear-site-btn:hover {
-      background: #ff5252;
+      background: var(--danger);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
 
     .clear-all-btn {
-      background: #ff6b6b;
+      background: var(--warning);
       color: white;
-      border: none;
       padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 20px;
-      transition: background .2s;
+      font-size: 14px;
+      margin-top: 32px;
+      width: 100%;
+      justify-content: center;
     }
 
     .clear-all-btn:hover {
-      background: #ff5252;
+      background: var(--warning);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
 
-    /* ============================================================
-       DARK MODE STYLING — AUTOMATIC WITH prefers-color-scheme
-       ============================================================ */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #121212;
-        color: #f1f3f5;
+    /* Theme transitions */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
+    }
 
-      .subtitle {
-        color: #adb5bd;
-      }
-
-      .empty-state {
-        background: #1e1e1e;
-        box-shadow: none;
-      }
-
-      .empty-state p {
-        color: #999;
-      }
-
-      .site-card {
-        background: #1b1b1b;
-        box-shadow: none;
-      }
-
-      .element-item {
-        background: #272727;
-      }
-
-      .element-item:hover {
-        background: #2f2f2f;
-      }
-
-      .element-selector {
-        color: #ccc;
-      }
-
-      .site-count {
-        background: #343a40;
-        color: #dee2e6;
-      }
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Blocked Elements</h1>
-    <p class="subtitle">Manage all elements you've blocked across different websites</p>
+    <div class="header">
+      <div class="header-content">
+        <img src="assets/favicon.png" alt="GhostBlock Logo" class="logo-icon" />
+        <div class="header-text">
+          <h1>GhostBlock Manager</h1>
+          <p class="subtitle">Manage all elements you've blocked across different websites</p>
+        </div>
+      </div>
+      <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+        <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 6.34L4.93 4.93M19.07 19.07l-1.41-1.41" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" style="position: absolute;">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
 
     <div id="content"></div>
+    
+    <button id="clearAllBtn" class="btn clear-all-btn" style="display: none;">
+      🗑️ Clear All Blocked Elements
+    </button>
   </div>
 
   <script src="manage.js"></script>

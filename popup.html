@@ -10,23 +10,43 @@
 <body>
   <div class="card">
     <header class="card-header">
-      <h1 class="title">GhostBlock</h1>
-      <button class="more-btn" title="More">
-        <!-- vertical ellipsis -->
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <circle cx="12" cy="5" r="1.5" fill="#6b7280"></circle>
-          <circle cx="12" cy="12" r="1.5" fill="#6b7280"></circle>
-          <circle cx="12" cy="19" r="1.5" fill="#6b7280"></circle>
-        </svg>
-      </button>
+      <div class="header-left">
+        <div class="logo-container">
+          <img src="assets/favicon.png" alt="GhostBlock Logo" class="logo-icon" />
+          <h1 class="title">GhostBlock</h1>
+        </div>
+      </div>
+      <div class="header-controls">
+        <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+          <svg class="theme-icon sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 6.34L4.93 4.93M19.07 19.07l-1.41-1.41" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <svg class="theme-icon moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="more-btn" title="More">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <circle cx="12" cy="5" r="1.5" fill="currentColor"></circle>
+            <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+            <circle cx="12" cy="19" r="1.5" fill="currentColor"></circle>
+          </svg>
+        </button>
+      </div>
     </header>
 
     <div class="card-body">
-      <div class="row">
-        <label class="label">Start Blocking</label>
+      <div class="main-toggle-section">
+        <div class="toggle-info">
+          <label class="toggle-label">Start Blocking</label>
+          <p class="toggle-description">Click elements to hide them</p>
+        </div>
         <div class="toggle-wrap">
           <input id="blockToggle" class="toggle-checkbox" type="checkbox" />
-          <label for="blockToggle" class="toggle"></label>
+          <label for="blockToggle" class="toggle">
+            <span class="toggle-slider"></span>
+          </label>
         </div>
       </div>
 
@@ -38,7 +58,20 @@
 
       <div id="optionsPanel" class="options-panel" style="display: none;">
         <div class="divider" aria-hidden></div>
-        <h3 class="options-title">Quick Block Options</h3>
+        <h3 class="options-title">Preferences & Quick Block Options</h3>
+        
+        <div class="preferences-section">
+          <div class="preference-item">
+            <label for="themePreference" class="preference-label">Theme</label>
+            <select id="themePreference" class="theme-select">
+              <option value="auto">Auto (System)</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="divider" aria-hidden></div>
         
         <div class="options-grid">
           <label class="option-item">
